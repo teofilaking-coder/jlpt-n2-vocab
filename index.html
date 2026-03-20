@@ -33,6 +33,7 @@ nav button.active{background:var(--accent);color:#fff}
 .progress-bar .fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));border-radius:2px;transition:width .5s}
 .card{background:var(--card);border-radius:16px;padding:24px 20px;text-align:center;min-height:260px;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;cursor:pointer;user-select:none;transition:all .3s}
 .card:hover{box-shadow:0 8px 30px rgba(99,102,241,0.12)}
+.card .illust{font-size:3.2rem;margin-bottom:4px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.2));line-height:1}
 .card .kanji{font-size:2.8rem;font-weight:700;margin-bottom:6px}
 .card .reading{font-size:1.05rem;color:var(--accent2);margin-bottom:4px}
 .card .cat-badge{font-size:0.7rem;padding:2px 8px;border-radius:12px;background:var(--card2);color:var(--sub);margin-bottom:8px}
@@ -380,6 +381,37 @@ n1:[
 };
 
 const CAT_ICON={"명사":"📦","동사":"⚡","형용사":"🎨","부사":"💨","문법":"📐"};
+const ILLUST={
+"食べる":"🍽️","飲む":"🥤","行く":"🚶","来る":"🏃","見る":"👁️","聞く":"👂","読む":"📖","書く":"✍️","話す":"💬","買う":"🛒",
+"待つ":"⏳","作る":"🔨","住む":"🏠","働く":"💼","大きい":"🐘","小さい":"🐜","新しい":"✨","高い":"🏔️","安い":"💰","多い":"👥",
+"少ない":"🔻","暑い":"🌞","寒い":"❄️","近い":"📍","学校":"🏫","先生":"👨‍🏫","友達":"🤝","家族":"👨‍👩‍👧‍👦","天気":"🌤️","電車":"🚃",
+"病院":"🏥","映画":"🎬","料理":"🍳","旅行":"✈️","写真":"📷","時間":"⏰","とても":"💯","いつも":"🔄","たくさん":"📦","まだ":"⏸️",
+"届ける":"📬","集まる":"👥","決める":"✅","変わる":"🔄","続ける":"▶️","育てる":"🌱","倒れる":"💫","乾く":"☀️","間に合う":"⏱️","慣れる":"👍",
+"片付ける":"🧹","謝る":"🙇","便利":"🔧","不便":"🚫","簡単":"✌️","特別":"🌟","丁寧":"🎀","正確":"🎯","残念":"😔",
+"経験":"📝","習慣":"🔁","趣味":"🎨","予定":"📅","連絡":"📱","相談":"🗣️","紹介":"🤲","注意":"⚠️","交通":"🚦","文化":"🏯",
+"自然":"🌿","産業":"🏭","国際":"🌐","やはり":"💡","だいたい":"📊","なかなか":"👌","そろそろ":"🕐","ずっと":"♾️","だんだん":"📈",
+"についで":"📌","ために":"🎯",
+"努力":"💪","成功":"🏆","失敗":"❌","計画":"📋","準備":"📦","参加":"🙋","調査":"🔍","発表":"📢","評価":"⭐","議論":"🗣️",
+"能力":"🧠","知識":"📚","方法":"🛤️","目標":"🎯","機会":"🚪","印象":"💭","期待":"🤞","不安":"😟","満足":"😊","提案":"💡",
+"認める":"✅","比べる":"⚖️","伝える":"📨","逃げる":"🏃","受ける":"🤲","断る":"🚫","尊敬":"👏","反対":"🔄",
+"適当":"🎲","豊富":"💎","有効":"✅","重大":"🔴","正式":"📜","急速":"🚀","徐々に":"🐢","直接":"➡️","実際に":"👀","確かに":"☑️","ようやく":"🎉","たびに":"🔁",
+"影響":"🌊","経済":"💹","政治":"🏛️","社会":"🌆","環境":"🌍","技術":"💻","状況":"📊","関係":"🔗","原因":"❓","結果":"📈",
+"目的":"🎯","条件":"📋","割合":"📊","対象":"🎯","傾向":"📉","制度":"⚙️","価値":"💎","効果":"✨","基本":"📐","現象":"🔬",
+"増加":"📈","減少":"📉","変化":"🔄","発展":"🚀","主張":"📣","判断":"⚖️","実現":"🌈","解決":"🔑","確認":"✅","比較":"🔍",
+"維持":"🛡️","対応":"🤝","適切":"👌","重要":"❗","必要":"📌","可能":"💡","複雑":"🧩","明確":"🔆","豊か":"🌾","深刻":"😰",
+"莫大":"💰","貴重":"👑","具体的":"🔧","積極的":"🔥","一般的":"📊","基本的":"📐","効率的":"⚡","精神的":"🧘",
+"含む":"📥","異なる":"↔️","伴う":"🤝","基づく":"🏗️","占める":"📊","応じる":"🙋","生じる":"🌱","果たす":"🏁",
+"示す":"👉","求める":"🔎","防ぐ":"🛡️","届く":"📩","預ける":"🏦","整える":"✨","振る":"👋","抱える":"🤱","通じる":"🔗","及ぼす":"🌊",
+"恵まれる":"🍀","覆う":"🧣","従う":"🚶","つまり":"💬","一方":"↔️","むしろ":"🔀","さらに":"➕","ますます":"⬆️","少なくとも":"1️⃣",
+"たとえ":"🎭","せいぜい":"📏","いよいよ":"🎊","やがて":"🌅","たちまち":"💨","わずか":"🤏","一応":"📋","あくまで":"🔒","必ずしも":"❓",
+"に対して":"🆚","に関して":"📎","において":"📍","に伴い":"🔗","に基づいて":"📜","にかけて":"🌉","に応じて":"🔧",
+"を通じて":"🔄","をめぐって":"🔄","にもかかわらず":"💪","一方で":"↔️","とともに":"🤝","に限らず":"🌐","としては":"👤","上で":"⬆️","次第":"📬","末":"🔚","得る":"💡",
+"概念":"🧠","把握":"✊","促進":"🚀","見解":"👁️","懸念":"😟","是正":"🔧","趣旨":"📜","措置":"🛠️","根拠":"📊","本質":"💠",
+"前提":"🏗️","矛盾":"⚔️","踏まえる":"👣","委ねる":"🤲","覆す":"🔄","遂げる":"🏆","携わる":"🤝","培う":"🌱","拒む":"✋","挑む":"⚔️",
+"悔やむ":"😢","賄う":"💰","妥当":"✅","顕著":"📢","膨大":"🏔️","一貫":"➡️","画期的":"💡","抜本的":"🔨","普遍的":"🌍",
+"辛うじて":"😅","おのずと":"🍃","もっぱら":"🎯","ひたすら":"🏃","あえて":"💪",
+"をもって":"📌","に即して":"📏","を余儀なくされる":"😤","たりとも":"☝️","ないものでもない":"🤔","ずにはいられない":"😂"
+};
 const LV_COLOR={n5:"#16a34a",n4:"#2563eb",n3:"#d97706",n2:"#7c3aed",n1:"#dc2626"};
 const LV_LABEL={n5:"N5 기초",n4:"N4 초중급",n3:"N3 중급",n2:"N2 중상급",n1:"N1 상급"};
 
@@ -540,17 +572,20 @@ function renderFlash(){
   if(!studyQueue.length) return `<div class="empty">${currentTab==="review"?"틀린 단어가 없습니다.":currentTab==="bookmark"?"즐겨찾기가 비어있습니다.":"해당하는 단어가 없습니다."}</div>`;
   const w=studyQueue[cardIdx%studyQueue.length];
   const ln=getLvName(w.vid);
+  const ic=ILLUST[w.k]||CAT_ICON[w.cat]||"";
   return `<div class="card" onclick="revealCard()">
     <span class="tag">${cardIdx+1}/${studyQueue.length}</span>
     <span class="ptag ${ln}">${getLvLabel(w.vid)}</span>
+    <div class="illust">${ic}</div>
     <div class="kanji">${w.k}</div>
     <div class="reading">${w.r}</div>
     <div class="cat-badge">${CAT_ICON[w.cat]||""} ${w.cat}</div>
     <div class="meaning ${revealed?"show":""}">${w.m}</div>
-    <div class="example ${revealed?"show":""}">${w.ex}</div>
+    <div class="example ${revealed?"show":""}">${w.ex}${revealed?` <span style="cursor:pointer;font-size:0.9rem;vertical-align:middle" onclick="speakWord('${w.ex.replace(/'/g,"\\'")}',event)">🔊</span>`:""}</div>
   </div>
   <div class="card-btns">
-    <button onclick="speakWord('${w.k}',event)">🔊 발음</button>
+    <button onclick="speakWord('${w.k}',event)">🔊 단어 발음</button>
+    <button onclick="speakWord('${w.ex.replace(/'/g,"\\'")}',event)">🔊 예문 발음</button>
     <button class="${isBm(w.vid)?"bookmarked":""}" onclick="toggleBm('${w.vid}',event)">${isBm(w.vid)?"★ 즐겨찾기":"☆ 즐겨찾기"}</button>
   </div>
   ${revealed?"":'<div class="hint">카드를 클릭하면 뜻이 나타납니다</div>'}
@@ -569,7 +604,7 @@ function renderList(){
   return `<input class="search" placeholder="검색 (한자, 히라가나, 한국어)" value="${searchQ}" oninput="doSearch(this.value)">
   ${renderCatFilter()}
   <div class="word-list">${pool.length?pool.map(w=>`<div class="word-item" onclick="jumpToCard('${w.vid}')">
-    <div class="wi-left"><span class="dot ${getLvName(w.vid)}"></span><span class="wk">${w.k}</span><span class="wr">${w.r}</span></div>
+    <div class="wi-left"><span class="dot ${getLvName(w.vid)}"></span><span style="font-size:1.2rem">${ILLUST[w.k]||""}</span><span class="wk">${w.k}</span><span class="wr">${w.r}</span></div>
     <div class="wi-right"><span class="wm">${w.m}</span><span class="bm ${isBm(w.vid)?"on":""}" onclick="toggleBm('${w.vid}',event)">${isBm(w.vid)?"★":"☆"}</span>
     <span style="cursor:pointer;font-size:0.85rem" onclick="speakWord('${w.k}',event)">🔊</span></div>
   </div>`).join(""):'<div class="empty">결과가 없습니다.</div>'}</div>`;
