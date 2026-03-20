@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JLPT N2 코어 어휘 100</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0f172a;--card:#1e293b;--card2:#334155;--accent:#6366f1;--accent2:#818cf8;--green:#22c55e;--red:#ef4444;--text:#f1f5f9;--sub:#94a3b8;--orange:#f59e0b}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center}
+header{width:100%;padding:20px;text-align:center;background:linear-gradient(135deg,#312e81,#4338ca);border-bottom:2px solid var(--accent)}
+header h1{font-size:1.6rem;font-weight:700;letter-spacing:-0.5px}
+header p{color:var(--sub);font-size:0.85rem;margin-top:4px}
+.container{max-width:500px;width:100%;padding:16px;flex:1}
+nav{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+nav button{padding:8px 14px;border:none;border-radius:8px;background:var(--card);color:var(--sub);font-size:0.82rem;cursor:pointer;transition:all .2s}
+nav button.active{background:var(--accent);color:#fff}
+nav button:hover{background:var(--card2)}
+.stats-bar{display:flex;gap:8px;margin-bottom:16px}
+.stat{flex:1;background:var(--card);border-radius:10px;padding:10px;text-align:center}
+.stat .num{font-size:1.3rem;font-weight:700}
+.stat .label{font-size:0.7rem;color:var(--sub);margin-top:2px}
+.card{background:var(--card);border-radius:16px;padding:28px 24px;text-align:center;min-height:280px;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;cursor:pointer;user-select:none;transition:transform .3s,box-shadow .3s}
+.card:hover{box-shadow:0 8px 30px rgba(99,102,241,0.15)}
+.card .kanji{font-size:3rem;font-weight:700;margin-bottom:8px}
+.card .reading{font-size:1.1rem;color:var(--accent2);margin-bottom:6px}
+.card .meaning{font-size:1rem;color:var(--sub);margin-bottom:10px;opacity:0;transition:opacity .3s}
+.card .meaning.show{opacity:1}
+.card .example{font-size:0.85rem;color:var(--sub);opacity:0;transition:opacity .3s;line-height:1.5;max-width:360px}
+.card .example.show{opacity:0.8}
+.card .tag{position:absolute;top:12px;right:14px;font-size:0.65rem;padding:3px 8px;border-radius:20px;background:var(--card2);color:var(--sub)}
+.card .progress-tag{position:absolute;top:12px;left:14px;font-size:0.65rem;padding:3px 8px;border-radius:20px}
+.card .progress-tag.new{background:#312e81;color:var(--accent2)}
+.card .progress-tag.learning{background:#422006;color:var(--orange)}
+.card .progress-tag.mastered{background:#052e16;color:var(--green)}
+.hint{text-align:center;color:var(--sub);font-size:0.75rem;margin:10px 0}
+.actions{display:flex;gap:8px;margin-top:14px}
+.actions button{flex:1;padding:12px;border:none;border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-hard{background:rgba(239,68,68,0.15);color:var(--red)}
+.btn-good{background:rgba(99,102,241,0.15);color:var(--accent2)}
+.btn-easy{background:rgba(34,197,94,0.15);color:var(--green)}
+.actions button:hover{transform:translateY(-1px)}
+.word-list{display:flex;flex-direction:column;gap:6px}
+.word-item{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--card);border-radius:10px;cursor:pointer;transition:background .2s}
+.word-item:hover{background:var(--card2)}
+.word-item .left{display:flex;align-items:center;gap:12px}
+.word-item .kanji{font-size:1.1rem;font-weight:600;min-width:60px}
+.word-item .reading{font-size:0.8rem;color:var(--accent2)}
+.word-item .meaning{font-size:0.8rem;color:var(--sub)}
+.word-item .dot{width:8px;height:8px;border-radius:50%}
+.dot.new{background:var(--accent2)}
+.dot.learning{background:var(--orange)}
+.dot.mastered{background:var(--green)}
+.search{width:100%;padding:10px 14px;border:1px solid var(--card2);border-radius:10px;background:var(--card);color:var(--text);font-size:0.9rem;margin-bottom:12px;outline:none}
+.search:focus{border-color:var(--accent)}
+.quiz-option{width:100%;padding:14px;background:var(--card);border:2px solid transparent;border-radius:10px;color:var(--text);font-size:0.9rem;cursor:pointer;text-align:left;margin-bottom:8px;transition:all .2s}
+.quiz-option:hover{border-color:var(--accent);background:var(--card2)}
+.quiz-option.correct{border-color:var(--green);background:rgba(34,197,94,0.1)}
+.quiz-option.wrong{border-color:var(--red);background:rgba(239,68,68,0.1)}
+.quiz-question{font-size:2.2rem;font-weight:700;text-align:center;margin:30px 0 24px}
+.quiz-sub{text-align:center;color:var(--sub);font-size:0.85rem;margin-bottom:20px}
+.quiz-score{text-align:center;margin:40px 0}
+.quiz-score .big{font-size:3rem;font-weight:700;color:var(--accent2)}
+.quiz-score p{color:var(--sub);margin-top:8px}
+.quiz-restart{display:block;width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:0.95rem;font-weight:600;cursor:pointer;margin-top:20px}
+.category-filter{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px}
+.category-filter button{padding:5px 10px;border:1px solid var(--card2);border-radius:20px;background:transparent;color:var(--sub);font-size:0.72rem;cursor:pointer;transition:all .2s}
+.category-filter button.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.progress-bar{width:100%;height:4px;background:var(--card2);border-radius:2px;margin:10px 0;overflow:hidden}
+.progress-bar .fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));border-radius:2px;transition:width .5s}
+.empty{text-align:center;padding:40px;color:var(--sub)}
+@media(max-width:400px){.card .kanji{font-size:2.4rem} nav button{font-size:0.75rem;padding:6px 10px}}
+</style>
+</head>
+<body>
+<header>
+<h1>JLPT N2 コア語彙 100</h1>
+<p>코어 어휘 기반 · 플래시카드 · 퀴즈</p>
+</header>
+<div class="container" id="app"></div>
+
+<script>
+const VOCAB = [
+{k:"影響",r:"えいきょう",m:"영향",ex:"環境に影響を与える。",cat:"명사"},
+{k:"経済",r:"けいざい",m:"경제",ex:"日本の経済は回復している。",cat:"명사"},
+{k:"政治",r:"せいじ",m:"정치",ex:"政治に関心がある。",cat:"명사"},
+{k:"社会",r:"しゃかい",m:"사회",ex:"社会問題について考える。",cat:"명사"},
+{k:"環境",r:"かんきょう",m:"환경",ex:"環境を守ることが大切だ。",cat:"명사"},
+{k:"技術",r:"ぎじゅつ",m:"기술",ex:"最新の技術を学ぶ。",cat:"명사"},
+{k:"状況",r:"じょうきょう",m:"상황",ex:"状況を把握する。",cat:"명사"},
+{k:"関係",r:"かんけい",m:"관계",ex:"人間関係に悩む。",cat:"명사"},
+{k:"原因",r:"げんいん",m:"원인",ex:"事故の原因を調べる。",cat:"명사"},
+{k:"結果",r:"けっか",m:"결과",ex:"努力の結果が出た。",cat:"명사"},
+{k:"目的",r:"もくてき",m:"목적",ex:"旅行の目的は何ですか。",cat:"명사"},
+{k:"条件",r:"じょうけん",m:"조건",ex:"条件を満たす必要がある。",cat:"명사"},
+{k:"割合",r:"わりあい",m:"비율",ex:"女性の割合が増えた。",cat:"명사"},
+{k:"対象",r:"たいしょう",m:"대상",ex:"調査の対象は学生だ。",cat:"명사"},
+{k:"傾向",r:"けいこう",m:"경향",ex:"最近の傾向を分析する。",cat:"명사"},
+{k:"制度",r:"せいど",m:"제도",ex:"新しい制度が導入された。",cat:"명사"},
+{k:"価値",r:"かち",m:"가치",ex:"文化的な価値がある。",cat:"명사"},
+{k:"効果",r:"こうか",m:"효과",ex:"薬の効果が現れた。",cat:"명사"},
+{k:"基本",r:"きほん",m:"기본",ex:"基本を大切にする。",cat:"명사"},
+{k:"現象",r:"げんしょう",m:"현상",ex:"不思議な現象が起きた。",cat:"명사"},
+{k:"増加",r:"ぞうか",m:"증가",ex:"人口が増加している。",cat:"명사"},
+{k:"減少",r:"げんしょう",m:"감소",ex:"出生率が減少した。",cat:"명사"},
+{k:"変化",r:"へんか",m:"변화",ex:"大きな変化が起きた。",cat:"명사"},
+{k:"発展",r:"はってん",m:"발전",ex:"経済が発展する。",cat:"명사"},
+{k:"主張",r:"しゅちょう",m:"주장",ex:"自分の意見を主張する。",cat:"명사"},
+{k:"判断",r:"はんだん",m:"판단",ex:"正しい判断をする。",cat:"명사"},
+{k:"実現",r:"じつげん",m:"실현",ex:"夢を実現する。",cat:"명사"},
+{k:"解決",r:"かいけつ",m:"해결",ex:"問題を解決する。",cat:"명사"},
+{k:"確認",r:"かくにん",m:"확인",ex:"予約を確認する。",cat:"명사"},
+{k:"比較",r:"ひかく",m:"비교",ex:"二つの案を比較する。",cat:"명사"},
+{k:"維持",r:"いじ",m:"유지",ex:"健康を維持する。",cat:"명사"},
+{k:"対応",r:"たいおう",m:"대응",ex:"問題に対応する。",cat:"명사"},
+{k:"適切",r:"てきせつ",m:"적절",ex:"適切な判断だった。",cat:"형용사"},
+{k:"重要",r:"じゅうよう",m:"중요",ex:"重要な会議がある。",cat:"형용사"},
+{k:"必要",r:"ひつよう",m:"필요",ex:"準備が必要だ。",cat:"형용사"},
+{k:"可能",r:"かのう",m:"가능",ex:"実現が可能になった。",cat:"형용사"},
+{k:"複雑",r:"ふくざつ",m:"복잡",ex:"複雑な問題を抱える。",cat:"형용사"},
+{k:"明確",r:"めいかく",m:"명확",ex:"目標を明確にする。",cat:"형용사"},
+{k:"豊か",r:"ゆたか",m:"풍요로운",ex:"自然が豊かな地域だ。",cat:"형용사"},
+{k:"深刻",r:"しんこく",m:"심각",ex:"深刻な問題が発生した。",cat:"형용사"},
+{k:"莫大",r:"ばくだい",m:"막대한",ex:"莫大な費用がかかる。",cat:"형용사"},
+{k:"貴重",r:"きちょう",m:"귀중",ex:"貴重な経験をした。",cat:"형용사"},
+{k:"具体的",r:"ぐたいてき",m:"구체적",ex:"具体的な計画を立てる。",cat:"형용사"},
+{k:"積極的",r:"せっきょくてき",m:"적극적",ex:"積極的に参加する。",cat:"형용사"},
+{k:"一般的",r:"いっぱんてき",m:"일반적",ex:"一般的な考え方だ。",cat:"형용사"},
+{k:"基本的",r:"きほんてき",m:"기본적",ex:"基本的なルールを守る。",cat:"형용사"},
+{k:"効率的",r:"こうりつてき",m:"효율적",ex:"効率的に仕事をする。",cat:"형용사"},
+{k:"精神的",r:"せいしんてき",m:"정신적",ex:"精神的に強くなる。",cat:"형용사"},
+{k:"含む",r:"ふくむ",m:"포함하다",ex:"税金を含む価格だ。",cat:"동사"},
+{k:"異なる",r:"ことなる",m:"다르다",ex:"意見が異なる。",cat:"동사"},
+{k:"伴う",r:"ともなう",m:"수반하다",ex:"危険を伴う作業だ。",cat:"동사"},
+{k:"基づく",r:"もとづく",m:"근거하다",ex:"事実に基づく判断だ。",cat:"동사"},
+{k:"占める",r:"しめる",m:"차지하다",ex:"全体の半分を占める。",cat:"동사"},
+{k:"応じる",r:"おうじる",m:"응하다",ex:"要求に応じる。",cat:"동사"},
+{k:"生じる",r:"しょうじる",m:"생기다",ex:"問題が生じる。",cat:"동사"},
+{k:"果たす",r:"はたす",m:"이루다, 다하다",ex:"役割を果たす。",cat:"동사"},
+{k:"示す",r:"しめす",m:"나타내다",ex:"データが結果を示す。",cat:"동사"},
+{k:"求める",r:"もとめる",m:"요구하다",ex:"助けを求める。",cat:"동사"},
+{k:"防ぐ",r:"ふせぐ",m:"막다",ex:"事故を防ぐ。",cat:"동사"},
+{k:"届く",r:"とどく",m:"닿다, 도착하다",ex:"手紙が届いた。",cat:"동사"},
+{k:"預ける",r:"あずける",m:"맡기다",ex:"荷物を預ける。",cat:"동사"},
+{k:"整える",r:"ととのえる",m:"갖추다, 정돈하다",ex:"環境を整える。",cat:"동사"},
+{k:"振る",r:"ふる",m:"흔들다",ex:"手を振る。",cat:"동사"},
+{k:"抱える",r:"かかえる",m:"안다, 떠안다",ex:"問題を抱える。",cat:"동사"},
+{k:"通じる",r:"つうじる",m:"통하다",ex:"英語が通じる。",cat:"동사"},
+{k:"及ぼす",r:"およぼす",m:"미치다",ex:"影響を及ぼす。",cat:"동사"},
+{k:"恵まれる",r:"めぐまれる",m:"혜택받다",ex:"才能に恵まれている。",cat:"동사"},
+{k:"覆う",r:"おおう",m:"덮다",ex:"雪が山を覆う。",cat:"동사"},
+{k:"従う",r:"したがう",m:"따르다",ex:"規則に従う。",cat:"동사"},
+{k:"つまり",r:"つまり",m:"즉, 다시 말해",ex:"つまり、賛成ということですか。",cat:"부사"},
+{k:"一方",r:"いっぽう",m:"한편",ex:"一方、反対意見もある。",cat:"부사"},
+{k:"むしろ",r:"むしろ",m:"오히려, 차라리",ex:"むしろこちらの方がいい。",cat:"부사"},
+{k:"さらに",r:"さらに",m:"더욱, 게다가",ex:"さらに努力が必要だ。",cat:"부사"},
+{k:"ますます",r:"ますます",m:"점점 더",ex:"状況はますます悪化した。",cat:"부사"},
+{k:"少なくとも",r:"すくなくとも",m:"적어도",ex:"少なくとも3日はかかる。",cat:"부사"},
+{k:"たとえ",r:"たとえ",m:"설령, 비록",ex:"たとえ失敗しても諦めない。",cat:"부사"},
+{k:"せいぜい",r:"せいぜい",m:"기껏해야",ex:"せいぜい100人しか入れない。",cat:"부사"},
+{k:"いよいよ",r:"いよいよ",m:"드디어, 마침내",ex:"いよいよ試合が始まる。",cat:"부사"},
+{k:"やがて",r:"やがて",m:"이윽고, 곧",ex:"やがて春が来る。",cat:"부사"},
+{k:"たちまち",r:"たちまち",m:"순식간에",ex:"噂はたちまち広がった。",cat:"부사"},
+{k:"わずか",r:"わずか",m:"겨우, 약간",ex:"わずかな差で負けた。",cat:"부사"},
+{k:"一応",r:"いちおう",m:"일단, 일응",ex:"一応確認しておく。",cat:"부사"},
+{k:"あくまで",r:"あくまで",m:"어디까지나",ex:"あくまで個人の意見だ。",cat:"부사"},
+{k:"必ずしも",r:"かならずしも",m:"반드시~는 아니다",ex:"高い物が必ずしもいいとは限らない。",cat:"부사"},
+{k:"に対して",r:"にたいして",m:"~에 대해서",ex:"この問題に対して意見がある。",cat:"문법"},
+{k:"に関して",r:"にかんして",m:"~에 관해서",ex:"環境問題に関して議論する。",cat:"문법"},
+{k:"において",r:"において",m:"~에서, ~에 있어서",ex:"会議において発表した。",cat:"문법"},
+{k:"に伴い",r:"にともない",m:"~에 따라",ex:"人口増加に伴い問題が生じた。",cat:"문법"},
+{k:"に基づいて",r:"にもとづいて",m:"~에 근거하여",ex:"法律に基づいて行動する。",cat:"문법"},
+{k:"にかけて",r:"にかけて",m:"~에 걸쳐",ex:"春から夏にかけて暑くなる。",cat:"문법"},
+{k:"に応じて",r:"におうじて",m:"~에 따라, 응하여",ex:"能力に応じて給料が決まる。",cat:"문법"},
+{k:"を通じて",r:"をつうじて",m:"~을 통해",ex:"インターネットを通じて知った。",cat:"문법"},
+{k:"をめぐって",r:"をめぐって",m:"~을 둘러싸고",ex:"領土問題をめぐって対立している。",cat:"문법"},
+{k:"にもかかわらず",r:"にもかかわらず",m:"~에도 불구하고",ex:"努力したにもかかわらず失敗した。",cat:"문법"},
+{k:"一方で",r:"いっぽうで",m:"한편으로는",ex:"便利な一方で危険もある。",cat:"문법"},
+{k:"とともに",r:"とともに",m:"~와 함께",ex:"時代とともに変わる。",cat:"문법"},
+{k:"に限らず",r:"にかぎらず",m:"~에 한하지 않고",ex:"日本に限らず世界中で問題だ。",cat:"문법"},
+{k:"としては",r:"としては",m:"~로서는",ex:"学生としては優秀だ。",cat:"문법"},
+{k:"上で",r:"うえで",m:"~하는 데 있어",ex:"判断する上で重要な情報だ。",cat:"문법"},
+{k:"次第",r:"しだい",m:"~하는 대로, ~에 달려있다",ex:"届き次第ご連絡します。",cat:"문법"},
+{k:"末",r:"すえ",m:"~끝에",ex:"悩んだ末に決めた。",cat:"문법"},
+{k:"得る",r:"える/うる",m:"~할 수 있다",ex:"起こり得る問題を考える。",cat:"문법"},
+];
+
+const LS_KEY = "jlpt_n2_progress";
+let progress = JSON.parse(localStorage.getItem(LS_KEY)||"{}");
+function saveProgress(){localStorage.setItem(LS_KEY, JSON.stringify(progress))}
+function getLevel(id){return progress[id]||0}
+function getLevelName(id){const l=getLevel(id);return l===0?"new":l<3?"learning":"mastered"}
+function getLevelLabel(id){const n=getLevelName(id);return{new:"NEW",learning:"학습중",mastered:"완료"}[n]}
+
+const app=document.getElementById("app");
+let currentTab="flash";
+let cardIndex=0;
+let revealed=false;
+let quizData=null;
+let quizIndex=0;
+let quizScore=0;
+let quizAnswered=false;
+let filterCat="all";
+let searchQuery="";
+let studyQueue=[];
+
+function shuffle(a){let b=[...a];for(let i=b.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b}
+
+function buildQueue(){
+  let pool=VOCAB.map((v,i)=>({...v,id:i}));
+  if(filterCat!=="all") pool=pool.filter(v=>v.cat===filterCat);
+  const newW=pool.filter(v=>getLevel(v.id)===0);
+  const learning=pool.filter(v=>{const l=getLevel(v.id);return l>0&&l<3});
+  const mastered=pool.filter(v=>getLevel(v.id)>=3);
+  studyQueue=[...shuffle(newW),...shuffle(learning),...shuffle(mastered)];
+  cardIndex=0;
+  revealed=false;
+}
+
+function stats(){
+  let n=0,l=0,m=0;
+  VOCAB.forEach((_,i)=>{const lv=getLevel(i);if(lv===0)n++;else if(lv<3)l++;else m++});
+  return{n,l,m}
+}
+
+function renderNav(){
+  const tabs=[["flash","플래시카드"],["list","단어 목록"],["quiz","퀴즈"]];
+  return `<nav>${tabs.map(([id,label])=>`<button class="${currentTab===id?"active":""}" onclick="switchTab('${id}')">${label}</button>`).join("")}</nav>`;
+}
+
+function renderStats(){
+  const s=stats();
+  return `<div class="stats-bar">
+    <div class="stat"><div class="num" style="color:var(--accent2)">${s.n}</div><div class="label">미학습</div></div>
+    <div class="stat"><div class="num" style="color:var(--orange)">${s.l}</div><div class="label">학습중</div></div>
+    <div class="stat"><div class="num" style="color:var(--green)">${s.m}</div><div class="label">완료</div></div>
+  </div>
+  <div class="progress-bar"><div class="fill" style="width:${(s.m/VOCAB.length*100).toFixed(1)}%"></div></div>`;
+}
+
+function renderFlash(){
+  if(!studyQueue.length){buildQueue()}
+  if(!studyQueue.length) return `<div class="empty">필터에 해당하는 단어가 없습니다.</div>`;
+  const w=studyQueue[cardIndex%studyQueue.length];
+  const ln=getLevelName(w.id);
+  return `<div class="card" onclick="revealCard()">
+    <span class="tag">${cardIndex+1} / ${studyQueue.length}</span>
+    <span class="progress-tag ${ln}">${getLevelLabel(w.id)}</span>
+    <div class="kanji">${w.k}</div>
+    <div class="reading">${w.r}</div>
+    <div class="meaning ${revealed?"show":""}">${w.m}</div>
+    <div class="example ${revealed?"show":""}">${w.ex}</div>
+  </div>
+  ${revealed?"":'<div class="hint">카드를 클릭하면 뜻이 나타납니다</div>'}
+  ${revealed?`<div class="actions">
+    <button class="btn-hard" onclick="rateCard(${w.id},'hard')">어려움</button>
+    <button class="btn-good" onclick="rateCard(${w.id},'good')">보통</button>
+    <button class="btn-easy" onclick="rateCard(${w.id},'easy')">쉬움</button>
+  </div>`:""}`;
+}
+
+function renderCatFilter(){
+  const cats=[["all","전체"],["명사","명사"],["형용사","형용사"],["동사","동사"],["부사","부사"],["문법","문법"]];
+  return `<div class="category-filter">${cats.map(([id,label])=>`<button class="${filterCat===id?"active":""}" onclick="setCat('${id}')">${label}</button>`).join("")}</div>`;
+}
+
+function renderList(){
+  let pool=VOCAB.map((v,i)=>({...v,id:i}));
+  if(filterCat!=="all") pool=pool.filter(v=>v.cat===filterCat);
+  if(searchQuery){
+    const q=searchQuery.toLowerCase();
+    pool=pool.filter(v=>v.k.includes(q)||v.r.includes(q)||v.m.includes(q));
+  }
+  return `<input class="search" placeholder="검색 (한자, 히라가나, 한국어)" value="${searchQuery}" oninput="doSearch(this.value)">
+  ${renderCatFilter()}
+  <div class="word-list">${pool.map(w=>`<div class="word-item" onclick="jumpToCard(${w.id})">
+    <div class="left"><span class="dot ${getLevelName(w.id)}"></span><span class="kanji">${w.k}</span><span class="reading">${w.r}</span></div>
+    <span class="meaning">${w.m}</span>
+  </div>`).join("")}</div>`;
+}
+
+function renderQuiz(){
+  if(!quizData){
+    return `<div style="text-align:center;padding:40px 0">
+      <p style="margin-bottom:16px;color:var(--sub)">JLPT N2 어휘 퀴즈</p>
+      <button class="quiz-restart" onclick="startQuiz()">퀴즈 시작 (10문제)</button>
+    </div>`;
+  }
+  if(quizIndex>=quizData.length){
+    return `<div class="quiz-score">
+      <div class="big">${quizScore} / ${quizData.length}</div>
+      <p>${quizScore>=8?"훌륭합니다!":quizScore>=5?"잘했습니다!":"더 연습해보세요!"}</p>
+    </div>
+    <button class="quiz-restart" onclick="startQuiz()">다시 도전</button>
+    <button class="quiz-restart" style="background:var(--card);margin-top:8px" onclick="quizData=null;render()">돌아가기</button>`;
+  }
+  const q=quizData[quizIndex];
+  return `<div class="hint" style="margin-bottom:0">${quizIndex+1} / ${quizData.length}　정답: ${quizScore}</div>
+    <div class="quiz-question">${q.question}</div>
+    <div class="quiz-sub">${q.sub}</div>
+    ${q.options.map((o,i)=>`<button class="quiz-option ${quizAnswered?(i===q.answer?"correct":(i===q.selected?"wrong":"")):"" }" onclick="answerQuiz(${i})" ${quizAnswered?"disabled":""}>${o}</button>`).join("")}
+    ${quizAnswered?`<button class="quiz-restart" style="margin-top:8px" onclick="nextQuiz()">다음</button>`:""}`;
+}
+
+function render(){
+  let html=renderNav()+renderStats();
+  if(currentTab==="flash") html+=renderCatFilter()+renderFlash();
+  else if(currentTab==="list") html+=renderList();
+  else html+=renderQuiz();
+  app.innerHTML=html;
+}
+
+window.switchTab=function(t){currentTab=t;if(t==="flash")buildQueue();render()};
+window.revealCard=function(){if(!revealed){revealed=true;render()}};
+window.rateCard=function(id,r){
+  let lv=getLevel(id);
+  if(r==="hard") lv=Math.max(0,lv-1);
+  else if(r==="good") lv=Math.min(5,lv+1);
+  else lv=Math.min(5,lv+2);
+  progress[id]=lv;saveProgress();
+  cardIndex++;revealed=false;render();
+};
+window.setCat=function(c){filterCat=c;buildQueue();render()};
+window.doSearch=function(v){searchQuery=v;render()};
+window.jumpToCard=function(id){
+  currentTab="flash";buildQueue();
+  const idx=studyQueue.findIndex(w=>w.id===id);
+  if(idx>=0)cardIndex=idx;
+  revealed=false;render();
+};
+window.startQuiz=function(){
+  const pool=shuffle(VOCAB.map((v,i)=>({...v,id:i}))).slice(0,10);
+  quizData=pool.map(w=>{
+    const wrong=shuffle(VOCAB.filter(v=>v.m!==w.m)).slice(0,3).map(v=>v.m);
+    const opts=shuffle([w.m,...wrong]);
+    const isReverse=Math.random()>0.5;
+    return{
+      question:isReverse?w.m:w.k,
+      sub:isReverse?"이 뜻의 일본어는?":"이 단어의 뜻은?",
+      options:isReverse?shuffle([w.k,...shuffle(VOCAB.filter(v=>v.k!==w.k)).slice(0,3).map(v=>v.k)]):opts,
+      answer:isReverse?[w.k,...shuffle(VOCAB.filter(v=>v.k!==w.k)).slice(0,3).map(v=>v.k)]:opts,
+      correctVal:isReverse?w.k:w.m,
+      id:w.id
+    };
+  }).map(q=>{
+    const opts=q.options||q.answer;
+    return{question:q.question,sub:q.sub,options:opts,answer:opts.indexOf(q.correctVal),id:q.id};
+  });
+  quizIndex=0;quizScore=0;quizAnswered=false;render();
+};
+window.answerQuiz=function(i){
+  if(quizAnswered)return;
+  quizAnswered=true;
+  quizData[quizIndex].selected=i;
+  if(i===quizData[quizIndex].answer){
+    quizScore++;
+    const id=quizData[quizIndex].id;
+    progress[id]=Math.min(5,(getLevel(id)||0)+1);saveProgress();
+  }
+  render();
+};
+window.nextQuiz=function(){quizIndex++;quizAnswered=false;render()};
+
+buildQueue();
+render();
+</script>
+</body>
+</html>
